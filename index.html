@@ -13,11 +13,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Poppins:wght@300;400;600&display=swap"
     rel="stylesheet">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="peta-semeru.svg">
-
-  <link rel="stylesheet" href="style.css">
-
   <script>
     tailwind.config = {
       theme: {
@@ -37,6 +32,106 @@
     }
   </script>
 
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Glass Panel dengan tint hijau sangat tipis */
+    .glass-panel {
+      background: rgba(26, 60, 52, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 163, 115, 0.3);
+      /* Border warna Wood transparan */
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Animasi Flash Kamera */
+    @keyframes flash {
+      0% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .flash-effect {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #F0FDF4;
+      /* Flash warna Mint Cream */
+      z-index: 50;
+      pointer-events: none;
+      animation: flash 0.8s ease-out forwards;
+    }
+
+    .hidden-canvas {
+      display: none;
+    }
+
+    /* Fullscreen adjustments */
+    :fullscreen #cameraContainer {
+      width: 100vw;
+      height: 100vh;
+      max-width: none;
+      border: none;
+      border-radius: 0;
+      background: #1A3C34;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      /* Indikator bisa diklik */
+    }
+
+    :fullscreen video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Custom Button Styles */
+    .wood-btn {
+      background-color: #D4A373;
+      color: #1A3C34;
+      transition: all 0.3s ease;
+    }
+
+    .wood-btn:hover {
+      background-color: #c29260;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Layout Grid Buttons */
+    .layout-btn {
+      background: #2D6A4F;
+      /* Emerald */
+      border: 2px solid transparent;
+      color: #F0FDF4;
+    }
+
+    .layout-btn:hover {
+      background: #245841;
+    }
+
+    .layout-btn.active {
+      background: #1A3C34;
+      border: 2px solid #D4A373;
+      /* Wood Border */
+      color: #D4A373;
+    }
+
+    /* Background Pattern Hutan Abstrak (CSS Gradient) */
+    .forest-bg {
+      background: radial-gradient(circle at top right, #2D6A4F, #1A3C34 60%, #0f2520);
+    }
+  </style>
 </head>
 
 <body class="forest-bg min-h-screen text-mint overflow-x-hidden">
@@ -55,14 +150,13 @@
         class="fa-solid fa-tree text-emerald absolute top-0 right-10 text-6xl opacity-20 transform rotate-12 hidden md:block"></i>
 
       <h1 class="text-5xl md:text-7xl font-adventure font-bold text-wood mb-2 tracking-wider drop-shadow-lg">
-        <i class="fa-solid fa-compass mr-3 text-10xl align-middle opacity-80"></i>PETA SEMERU
+        <i class="fa-solid fa-compass mr-3 text-3xl align-middle opacity-80"></i>PETA SEMERU
       </h1>
       <div
         class="inline-block border-t border-b border-wood/30 py-2 px-6 bg-deepForest/50 backdrop-blur-sm rounded-full">
         <p class="text-mint text-sm md:text-lg font-light tracking-wide uppercase">
-          <span class="text-wood font-bold">PE</span>NGAJIAN AKHIR <span class="text-wood font-bold">TA</span>HUN <span
-            class="text-wood font-bold">SE</span>mangat <span class="text-wood font-bold">ME</span>raih s<span
-            class="text-wood font-bold">U</span>rga
+          PENGAJIAN AKHIR TAHUN <span class="text-wood font-bold">SE</span>mangat <span
+            class="text-wood font-bold">ME</span>raih s<span class="text-wood font-bold">U</span>rga
         </p>
         <p class="text-xs text-emerald mt-1 font-bold">PPM Roudhotul Jannah Bandung</p>
       </div>
@@ -160,9 +254,12 @@
           <h3 class="font-bold mb-2 text-wood font-adventure"><i class="fa-solid fa-campground mr-2"></i>Petunjuk
             Petualang:</h3>
           <ul class="text-sm text-mint/90 space-y-2 list-disc pl-4 marker:text-wood">
-            <li>Sesuaikan resolusi bingkai dengan misi yang dipilih agar tidak gepeng.</li>
-            <li>Pastikan background file PNG transparan (bolong tengah).</li>
-            <li>Senyum terbaik untuk menyemangati akhir tahun!</li>
+            <li><b>Shortcut Keyboard:</b> Tekan <span
+                class="bg-wood text-deepForest px-1 rounded font-bold">SPASI</span> atau <span
+                class="bg-wood text-deepForest px-1 rounded font-bold">ENTER</span> untuk ambil foto.</li>
+            <li><b>Shortcut Mobile/Tablet:</b> Gunakan <span class="text-wood font-bold">Remote Bluetooth</span> (Tombol
+              Shutter) atau cukup <b>Sentuh Layar</b> kamera.</li>
+            <li>Pastikan background file PNG transparan.</li>
           </ul>
         </div>
       </div>
@@ -170,18 +267,30 @@
       <!-- Area Kamera & Preview (Tengah & Kanan) -->
       <div class="lg:col-span-8 flex flex-col items-center">
 
-        <!-- Wrapper Kamera -->
-        <div id="cameraContainer"
-          class="relative w-full max-w-2xl bg-deepForest rounded-xl overflow-hidden shadow-2xl border-4 border-wood mb-6 group transition-all duration-300 aspect-video">
+        <!-- Wrapper Kamera 
+                     Menambahkan 'cursor-pointer' agar user tahu area ini bisa diklik/disentuh -->
+        <div id="cameraContainer" onclick="handleScreenTap()"
+          class="relative w-full max-w-2xl bg-deepForest rounded-xl overflow-hidden shadow-2xl border-4 border-wood mb-6 group transition-all duration-300 aspect-video cursor-pointer">
 
           <!-- Dekorasi Sudut -->
-          <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-wood z-20"></div>
-          <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-wood z-20"></div>
-          <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-wood z-20"></div>
-          <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-wood z-20"></div>
+          <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-wood z-20 pointer-events-none"></div>
+          <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-wood z-20 pointer-events-none"></div>
+          <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-wood z-20 pointer-events-none">
+          </div>
+          <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-wood z-20 pointer-events-none">
+          </div>
 
-          <!-- Tombol Fullscreen -->
-          <button onclick="toggleFullscreen()"
+          <!-- Overlay 'Tap to Capture' Hint (Hanya muncul saat hover/awal) -->
+          <div
+            class="absolute bottom-4 left-0 right-0 text-center z-30 opacity-0 group-hover:opacity-80 transition pointer-events-none">
+            <span
+              class="bg-deepForest/70 text-wood px-4 py-1 rounded-full text-xs font-adventure border border-wood/50">
+              <i class="fa-solid fa-hand-pointer mr-1"></i> Klik/Sentuh Layar untuk Foto
+            </span>
+          </div>
+
+          <!-- Tombol Fullscreen (Stop propagation agar klik tombol ini tidak mentrigger foto) -->
+          <button onclick="event.stopPropagation(); toggleFullscreen()"
             class="absolute top-4 right-4 z-30 bg-deepForest/60 hover:bg-deepForest text-wood p-3 rounded-full backdrop-blur-md transition opacity-0 group-hover:opacity-100 focus:opacity-100 border border-wood"
             title="Fullscreen Camera">
             <i id="fsIcon" class="fa-solid fa-expand text-xl"></i>
@@ -208,9 +317,8 @@
         <div class="flex gap-4 mb-8">
           <button id="btnCapture" onclick="startPhotobooth()"
             class="wood-btn px-10 py-4 rounded-full font-bold text-xl shadow-xl flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed font-adventure tracking-wide">
-            <i class="fa-solid fa-camera"></i> AMBIL FOTO
+            <i class="fa-solid fa-camera"></i> AMBIL FOTO (SPASI)
           </button>
-
 
           <button id="btnRetake" onclick="resetApp()"
             class="px-8 py-4 bg-emerald hover:bg-[#23533d] text-mint rounded-full font-bold text-lg shadow-xl hidden transition flex items-center gap-2 font-adventure border border-mint/20">
@@ -390,6 +498,32 @@
       }
     }
 
+    // --- INPUT SHORTCUTS HANDLERS ---
+
+    // 1. Keyboard Handler (Laptop: Spasi/Enter, Mobile: Remote Shutter)
+    document.addEventListener('keydown', (e) => {
+      // Jika sedang mengetik di input file (jarang terjadi tapi best practice), abaikan
+      if (e.target.tagName === 'INPUT') return;
+
+      // Spasi biasanya scroll halaman, kita prevent biar gak turun
+      if (e.code === 'Space') e.preventDefault();
+
+      // Cek tombol: Space, Enter, atau Volume Keys (jika browser support)
+      // Banyak remote shutter bluetooth mengirim sinyal 'Enter' atau 'VolumeUp'
+      if (['Space', 'Enter', 'AudioVolumeUp'].includes(e.code) || e.key === ' ' || e.key === 'Enter') {
+        if (!state.isCapturing) {
+          startPhotobooth();
+        }
+      }
+    });
+
+    // 2. Screen Tap Handler (Mobile/Tablet Touch)
+    function handleScreenTap() {
+      if (!state.isCapturing) {
+        startPhotobooth();
+      }
+    }
+
     // --- CORE LOGIC ---
 
     async function startPhotobooth() {
@@ -418,7 +552,7 @@
       generateStrip();
       state.isCapturing = false;
       btnCapture.classList.remove('hidden');
-      btnCapture.innerHTML = '<i class="fa-solid fa-camera"></i> AMBIL LAGI';
+      btnCapture.innerHTML = '<i class="fa-solid fa-camera"></i> AMBIL LAGI (SPASI)';
       btnRetake.classList.remove('hidden');
     }
 
@@ -536,7 +670,7 @@
     function resetApp() {
       resultArea.classList.add('hidden');
       btnRetake.classList.add('hidden');
-      btnCapture.innerHTML = '<i class="fa-solid fa-camera"></i> AMBIL FOTO';
+      btnCapture.innerHTML = '<i class="fa-solid fa-camera"></i> AMBIL FOTO (SPASI)';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
