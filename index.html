@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PETA SEMERU - Photobooth</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome untuk Ikon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Cinzel (Adventure Title) & Poppins (Body) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Poppins:wght@300;400;600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            deepForest: '#1A3C34', // Hijau Tua Gelap
+            wood: '#D4A373',       // Coklat Muda Keemasan
+            emerald: '#2D6A4F',    // Hijau Emerald
+            mint: '#F0FDF4',       // Putih Kehijauan
+          },
+          fontFamily: {
+            adventure: ['Cinzel', 'serif'],
+            body: ['Poppins', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+</head>
+
+<body class="forest-bg min-h-screen text-mint overflow-x-hidden">
+
+  <!-- Flash Overlay -->
+  <div id="flash" class="hidden"></div>
+
+  <div class="container mx-auto px-4 py-8 max-w-6xl relative z-10">
+
+    <!-- Header -->
+    <header class="text-center mb-10 relative">
+      <!-- Dekorasi Daun -->
+      <i
+        class="fa-solid fa-leaf text-emerald absolute top-0 left-10 text-6xl opacity-20 transform -rotate-45 hidden md:block"></i>
+      <i
+        class="fa-solid fa-tree text-emerald absolute top-0 right-10 text-6xl opacity-20 transform rotate-12 hidden md:block"></i>
+
+      <h1 class="text-5xl md:text-7xl font-adventure font-bold text-wood mb-2 tracking-wider drop-shadow-lg">
+        <i class="fa-solid fa-compass mr-3 text-10xl align-middle opacity-80"></i>PETA SEMERU
+      </h1>
+      <div
+        class="inline-block border-t border-b border-wood/30 py-2 px-6 bg-deepForest/50 backdrop-blur-sm rounded-full">
+        <p class="text-mint text-sm md:text-lg font-light tracking-wide uppercase">
+          <span class="text-wood font-bold">PE</span>NGAJIAN AKHIR <span class="text-wood font-bold">TA</span>HUN <span
+            class="text-wood font-bold">SE</span>mangat <span class="text-wood font-bold">ME</span>raih s<span
+            class="text-wood font-bold">U</span>rga
+        </p>
+        <p class="text-xs text-emerald mt-1 font-bold">PPM Roudhotul Jannah Bandung</p>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+      <!-- Panel Kontrol (Kiri) -->
+      <div class="lg:col-span-4 space-y-6">
+
+        <!-- 1. Pilih Mode -->
+        <div class="glass-panel p-6 rounded-2xl shadow-xl border-l-4 border-l-wood">
+          <h2 class="text-xl font-bold mb-4 border-b border-wood/30 pb-2 text-wood font-adventure">
+            <i class="fa-solid fa-map text-emerald mr-2"></i>1. Pilih Misi (Layout)
+          </h2>
+          <div class="grid grid-cols-1 gap-3">
+            <!-- Mode 1 Foto -->
+            <button onclick="setMode('story')" id="btnModestory"
+              class="layout-btn p-3 rounded-xl transition flex items-center justify-between group">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-12 border-2 border-mint/30 rounded-sm bg-deepForest"></div>
+                <div class="text-left">
+                  <span class="block font-bold">1 Foto (Story)</span>
+                  <span class="text-xs text-mint/70">1080 x 1920 px</span>
+                </div>
+              </div>
+              <i class="fa-solid fa-location-dot opacity-0 transition text-wood"></i>
+            </button>
+
+            <!-- Mode 2 Foto -->
+            <button onclick="setMode('poster')" id="btnModeposter"
+              class="layout-btn p-3 rounded-xl transition flex items-center justify-between group">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-8 h-10 border-2 border-mint/30 rounded-sm bg-deepForest flex flex-col justify-center gap-0.5 p-0.5">
+                  <div class="h-1/2 bg-mint/10"></div>
+                  <div class="h-1/2 bg-mint/10"></div>
+                </div>
+                <div class="text-left">
+                  <span class="block font-bold">2 Foto (Poster)</span>
+                  <span class="text-xs text-mint/70">1080 x 1440 px</span>
+                </div>
+              </div>
+              <i class="fa-solid fa-location-dot opacity-0 transition text-wood"></i>
+            </button>
+
+            <!-- Mode 4 Foto (Strip) -->
+            <button onclick="setMode('strip')" id="btnModestrip"
+              class="layout-btn p-3 rounded-xl transition flex items-center justify-between group">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-6 h-12 border-2 border-mint/30 rounded-sm bg-deepForest flex flex-col justify-between p-0.5">
+                  <div class="h-1.5 bg-mint/10"></div>
+                  <div class="h-1.5 bg-mint/10"></div>
+                  <div class="h-1.5 bg-mint/10"></div>
+                  <div class="h-1.5 bg-mint/10"></div>
+                </div>
+                <div class="text-left">
+                  <span class="block font-bold">4 Foto (Strip)</span>
+                  <span class="text-xs text-mint/70">1080 x 2880 px</span>
+                </div>
+              </div>
+              <i class="fa-solid fa-location-dot opacity-0 transition text-wood"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Upload Frame -->
+        <div class="glass-panel p-6 rounded-2xl shadow-xl border-l-4 border-l-wood">
+          <h2 class="text-xl font-bold mb-4 border-b border-wood/30 pb-2 text-wood font-adventure">
+            <i class="fa-solid fa-image text-emerald mr-2"></i>2. Upload Bingkai
+          </h2>
+          <p class="text-xs text-wood mb-3 font-semibold" id="resInfo">
+            <i class="fa-solid fa-circle-info mr-1"></i> Pilih misi di atas terlebih dahulu.
+          </p>
+
+          <label id="uploadLabel"
+            class="block w-full cursor-pointer bg-deepForest hover:bg-[#15302a] transition rounded-lg border-2 border-dashed border-emerald hover:border-wood p-4 text-center group relative overflow-hidden shadow-inner">
+            <input type="file" id="frameInput" accept="image/png" class="hidden">
+            <div id="uploadPlaceholder">
+              <i class="fa-solid fa-tree text-3xl text-emerald group-hover:text-wood mb-2 transition"></i>
+              <span class="block text-sm text-mint group-hover:text-wood font-medium" id="fileName">Pilih File PNG
+                Transparan</span>
+            </div>
+          </label>
+
+          <button id="btnDeleteFrame" onclick="removeFrame()"
+            class="hidden w-full mt-3 bg-red-800/80 hover:bg-red-900 text-mint font-bold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2 border border-red-700">
+            <i class="fa-solid fa-trash-can"></i> Hapus Bingkai
+          </button>
+        </div>
+
+        <!-- 3. Instruksi -->
+        <div class="glass-panel p-6 rounded-2xl shadow-xl bg-emerald/20 border-l-4 border-l-emerald">
+          <h3 class="font-bold mb-2 text-wood font-adventure"><i class="fa-solid fa-campground mr-2"></i>Petunjuk
+            Petualang:</h3>
+          <ul class="text-sm text-mint/90 space-y-2 list-disc pl-4 marker:text-wood">
+            <li>Sesuaikan resolusi bingkai dengan misi yang dipilih agar tidak gepeng.</li>
+            <li>Pastikan background file PNG transparan (bolong tengah).</li>
+            <li>Senyum terbaik untuk menyemangati akhir tahun!</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Area Kamera & Preview (Tengah & Kanan) -->
+      <div class="lg:col-span-8 flex flex-col items-center">
+
+        <!-- Wrapper Kamera -->
+        <div id="cameraContainer"
+          class="relative w-full max-w-2xl bg-deepForest rounded-xl overflow-hidden shadow-2xl border-4 border-wood mb-6 group transition-all duration-300 aspect-video">
+
+          <!-- Dekorasi Sudut -->
+          <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-wood z-20"></div>
+          <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-wood z-20"></div>
+          <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-wood z-20"></div>
+          <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-wood z-20"></div>
+
+          <!-- Tombol Fullscreen -->
+          <button onclick="toggleFullscreen()"
+            class="absolute top-4 right-4 z-30 bg-deepForest/60 hover:bg-deepForest text-wood p-3 rounded-full backdrop-blur-md transition opacity-0 group-hover:opacity-100 focus:opacity-100 border border-wood"
+            title="Fullscreen Camera">
+            <i id="fsIcon" class="fa-solid fa-expand text-xl"></i>
+          </button>
+
+          <!-- Video Feed -->
+          <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform scale-x-[-1]"></video>
+
+          <!-- Overlay Countdown -->
+          <div id="countdownDisplay"
+            class="absolute inset-0 flex items-center justify-center bg-deepForest/80 text-9xl font-extrabold text-wood hidden z-10 font-adventure">
+            3
+          </div>
+
+          <!-- Indikator Loading Kamera -->
+          <div id="camLoading"
+            class="absolute inset-0 flex flex-col items-center justify-center bg-deepForest text-mint z-0">
+            <i class="fa-solid fa-compass fa-spin text-5xl mb-4 text-wood"></i>
+            <p class="font-adventure tracking-widest text-wood">MENYIAPKAN LENSA...</p>
+          </div>
+        </div>
+
+        <!-- Tombol Action -->
+        <div class="flex gap-4 mb-8">
+          <button id="btnCapture" onclick="startPhotobooth()"
+            class="wood-btn px-10 py-4 rounded-full font-bold text-xl shadow-xl flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed font-adventure tracking-wide">
+            <i class="fa-solid fa-camera"></i> AMBIL FOTO
+          </button>
+
+
+          <button id="btnRetake" onclick="resetApp()"
+            class="px-8 py-4 bg-emerald hover:bg-[#23533d] text-mint rounded-full font-bold text-lg shadow-xl hidden transition flex items-center gap-2 font-adventure border border-mint/20">
+            <i class="fa-solid fa-rotate-left"></i> ULANG
+          </button>
+        </div>
+
+        <!-- Area Hasil -->
+        <div id="resultArea" class="hidden flex flex-col items-center animate-fade-in-up w-full">
+          <h3 class="text-3xl font-bold mb-6 text-wood font-adventure drop-shadow-md">
+            <i class="fa-solid fa-star text-mint mr-2"></i>HASIL PETUALANGAN
+          </h3>
+          <!-- Image Result -->
+          <img id="finalImage" class="rounded-lg shadow-2xl border-[6px] border-wood mb-6 h-auto"
+            style="max-height: 70vh; max-width: 100%;" src="" alt="Hasil Photobooth">
+
+          <a id="downloadLink" href="#" download="PETA_SEMERU_2025.png"
+            class="wood-btn px-8 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 transition text-lg">
+            <i class="fa-solid fa-download"></i> SIMPAN MEMORI
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-mint/50 mt-12 pb-4 text-xs font-light">
+      &copy; 2025 PPM Roudhotul Jannah Bandung | PETA SEMERU Photobooth System
+    </footer>
+  </div>
+
+  <!-- Hidden Canvas untuk pemrosesan gambar -->
+  <canvas id="photoCanvas" class="hidden-canvas"></canvas>
+
+  <script>
+    // --- KONFIGURASI KAMERA ---
+    const config = {
+      camWidth: 1920,
+      camHeight: 1080,
+      countdownTime: 3
+    };
+
+    // --- DEFINISI LAYOUT ---
+    const layoutConfig = {
+      'story': {
+        name: "1 Foto (Story)",
+        width: 1080,
+        height: 1920,
+        cols: 1,
+        rows: 1,
+        count: 1
+      },
+      'poster': {
+        name: "2 Foto (Poster)",
+        width: 1080,
+        height: 1440,
+        cols: 1,
+        rows: 2,
+        count: 2
+      },
+      'strip': {
+        name: "4 Foto (Strip)",
+        width: 1080,
+        height: 2880,
+        cols: 1,
+        rows: 4,
+        count: 4
+      }
+    };
+
+    // --- STATE ---
+    let state = {
+      mode: 'poster',
+      photos: [],
+      frameImage: null,
+      isCapturing: false
+    };
+
+    // --- DOM ELEMENTS ---
+    const webcamVideo = document.getElementById('webcam');
+    const canvas = document.getElementById('photoCanvas');
+    const ctx = canvas.getContext('2d');
+    const countdownEl = document.getElementById('countdownDisplay');
+    const resultArea = document.getElementById('resultArea');
+    const finalImage = document.getElementById('finalImage');
+    const btnCapture = document.getElementById('btnCapture');
+    const btnRetake = document.getElementById('btnRetake');
+    const flashEl = document.getElementById('flash');
+    const frameInput = document.getElementById('frameInput');
+    const camLoading = document.getElementById('camLoading');
+    const btnDeleteFrame = document.getElementById('btnDeleteFrame');
+    const fileNameLabel = document.getElementById('fileName');
+    const cameraContainer = document.getElementById('cameraContainer');
+    const fsIcon = document.getElementById('fsIcon');
+    const resInfo = document.getElementById('resInfo');
+
+    // --- INIT CAMERA ---
+    async function initCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            width: { ideal: config.camWidth },
+            height: { ideal: config.camHeight },
+            facingMode: "user"
+          },
+          audio: false
+        });
+        webcamVideo.srcObject = stream;
+        webcamVideo.onloadedmetadata = () => {
+          camLoading.style.display = 'none';
+        };
+      } catch (err) {
+        alert("Gagal mengakses kamera: " + err.message);
+        camLoading.innerHTML = '<p class="text-red-500 font-bold">Kamera Belum Siap :(</p>';
+      }
+    }
+
+    // --- UI FUNCTIONS ---
+
+    function setMode(modeKey) {
+      if (state.isCapturing) return;
+      state.mode = modeKey;
+
+      document.querySelectorAll('.layout-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.querySelector('i.fa-location-dot').classList.add('opacity-0');
+      });
+      const activeBtn = document.getElementById(`btnMode${modeKey}`);
+      activeBtn.classList.add('active');
+      activeBtn.querySelector('i.fa-location-dot').classList.remove('opacity-0');
+
+      const layout = layoutConfig[modeKey];
+      resInfo.innerHTML = `<i class="fa-solid fa-circle-info mr-1"></i> Mode: <b>${layout.name}</b>. Upload Bingkai Ukuran: <b>${layout.width}x${layout.height} px</b>`;
+      resInfo.classList.remove('text-wood');
+      resInfo.classList.add('text-mint');
+    }
+
+    frameInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (file) {
+        fileNameLabel.innerText = file.name;
+        fileNameLabel.classList.add("text-wood", "font-bold");
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const img = new Image();
+          img.onload = () => {
+            state.frameImage = img;
+            btnDeleteFrame.classList.remove('hidden');
+
+            const currentLayout = layoutConfig[state.mode];
+            if (img.width !== currentLayout.width || img.height !== currentLayout.height) {
+              alert(`Peringatan Petualang:\n\nUkuran bingkai (${img.width}x${img.height}) TIDAK SESUAI dengan misi yang dipilih (${currentLayout.width}x${currentLayout.height}).\n\nHasil mungkin akan gepeng!`);
+            }
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function removeFrame() {
+      state.frameImage = null;
+      frameInput.value = '';
+      fileNameLabel.innerText = "Pilih File PNG Transparan";
+      fileNameLabel.classList.remove("text-wood", "font-bold");
+      btnDeleteFrame.classList.add('hidden');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        cameraContainer.requestFullscreen().catch(err => alert(err.message));
+        fsIcon.classList.replace('fa-expand', 'fa-compress');
+      } else {
+        document.exitFullscreen();
+        fsIcon.classList.replace('fa-compress', 'fa-expand');
+      }
+    }
+
+    // --- CORE LOGIC ---
+
+    async function startPhotobooth() {
+      if (state.isCapturing) return;
+
+      const layout = layoutConfig[state.mode];
+      state.isCapturing = true;
+      state.photos = [];
+
+      resultArea.classList.add('hidden');
+      btnCapture.classList.add('hidden');
+
+      for (let i = 1; i <= layout.count; i++) {
+        await doCountdown(i);
+        triggerFlash();
+        const photoData = captureFrame();
+        state.photos.push(photoData);
+
+        if (i < layout.count) {
+          await new Promise(r => setTimeout(r, 1000));
+        }
+      }
+
+      if (document.fullscreenElement) document.exitFullscreen();
+
+      generateStrip();
+      state.isCapturing = false;
+      btnCapture.classList.remove('hidden');
+      btnCapture.innerHTML = '<i class="fa-solid fa-camera"></i> AMBIL LAGI';
+      btnRetake.classList.remove('hidden');
+    }
+
+    function doCountdown(num) {
+      return new Promise(resolve => {
+        let count = config.countdownTime;
+        countdownEl.classList.remove('hidden');
+        countdownEl.innerText = count;
+
+        const timer = setInterval(() => {
+          count--;
+          if (count > 0) {
+            countdownEl.innerText = count;
+          } else {
+            clearInterval(timer);
+            countdownEl.classList.add('hidden');
+            resolve();
+          }
+        }, 1000);
+      });
+    }
+
+    function triggerFlash() {
+      flashEl.classList.remove('hidden');
+      flashEl.classList.add('flash-effect');
+      setTimeout(() => {
+        flashEl.classList.remove('flash-effect');
+        flashEl.classList.add('hidden');
+      }, 800);
+    }
+
+    function captureFrame() {
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = webcamVideo.videoWidth;
+      tempCanvas.height = webcamVideo.videoHeight;
+      const tempCtx = tempCanvas.getContext('2d');
+
+      tempCtx.translate(tempCanvas.width, 0);
+      tempCtx.scale(-1, 1);
+      tempCtx.drawImage(webcamVideo, 0, 0);
+
+      return tempCanvas;
+    }
+
+    function generateStrip() {
+      const layout = layoutConfig[state.mode];
+
+      canvas.width = layout.width;
+      canvas.height = layout.height;
+
+      // Fill Background Hutan Gelap (Agar kalau PNG bolong tetap ada warnanya, atau ganti white jika mau standard)
+      // Filosofi: Putih/Cream sebagai dasar foto (Mint Cream)
+      ctx.fillStyle = "#F0FDF4";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const slotWidth = canvas.width / layout.cols;
+      const slotHeight = canvas.height / layout.rows;
+
+      state.photos.forEach((photoCanvas, index) => {
+        const col = index % layout.cols;
+        const row = Math.floor(index / layout.cols);
+
+        const xPos = col * slotWidth;
+        const yPos = row * slotHeight;
+
+        const slotRatio = slotWidth / slotHeight;
+        const photoRatio = photoCanvas.width / photoCanvas.height;
+
+        let drawW, drawH, drawX, drawY;
+
+        if (photoRatio > slotRatio) {
+          drawH = slotHeight;
+          drawW = slotHeight * photoRatio;
+          drawX = xPos - (drawW - slotWidth) / 2;
+          drawY = yPos;
+        } else {
+          drawW = slotWidth;
+          drawH = slotWidth / photoRatio;
+          drawX = xPos;
+          drawY = yPos - (drawH - slotHeight) / 2;
+        }
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(xPos, yPos, slotWidth, slotHeight);
+        ctx.clip();
+        ctx.drawImage(photoCanvas, drawX, drawY, drawW, drawH);
+        ctx.restore();
+      });
+
+      // --- FRAME OVERLAY & WATERMARK ---
+      if (state.frameImage) {
+        ctx.drawImage(state.frameImage, 0, 0, canvas.width, canvas.height);
+      } else {
+        // Auto Watermark jika tidak ada frame
+        ctx.fillStyle = "#1A3C34"; // Deep Forest
+        ctx.fillRect(0, canvas.height - 80, canvas.width, 80);
+
+        ctx.fillStyle = "#D4A373"; // Wood
+        ctx.font = "bold 30px Cinzel";
+        ctx.textAlign = "center";
+        ctx.fillText("PETA SEMERU 2025 - PPM Roudhotul Jannah", canvas.width / 2, canvas.height - 30);
+      }
+
+      const dataURL = canvas.toDataURL('image/png');
+      finalImage.src = dataURL;
+      resultArea.classList.remove('hidden');
+
+      const link = document.getElementById('downloadLink');
+      link.href = dataURL;
+
+      resultArea.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetApp() {
+      resultArea.classList.add('hidden');
+      btnRetake.classList.add('hidden');
+      btnCapture.innerHTML = '<i class="fa-solid fa-camera"></i> AMBIL FOTO';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    setMode('poster');
+    window.addEventListener('load', initCamera);
+
+  </script>
+</body>
+
+</html>
