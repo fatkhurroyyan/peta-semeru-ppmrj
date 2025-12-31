@@ -215,7 +215,7 @@
           </button>
 
           <!-- Video Feed -->
-          <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform scale-x-[-1]"></video>
+          <video id="webcam" autoplay playsinline class="w-full h-full object-cover"></video>
 
           <!-- Overlay Countdown -->
           <div id="countdownDisplay"
@@ -516,8 +516,6 @@
       tempCanvas.height = webcamVideo.videoHeight;
       const tempCtx = tempCanvas.getContext('2d');
 
-      tempCtx.translate(tempCanvas.width, 0);
-      tempCtx.scale(-1, 1);
       tempCtx.drawImage(webcamVideo, 0, 0);
 
       return tempCanvas; // Mengembalikan canvas mentah
