@@ -12,10 +12,10 @@
   <!-- Google Fonts: Cinzel (Adventure Title) & Poppins (Body) -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Poppins:wght@300;400;600&display=swap"
     rel="stylesheet">
-
-  <link rel="stylesheet" href="style.css">
-
-  <link rel="icon" type="image/png" href="peta-semeru.svg">
+  <!-- JSZip untuk fitur Download Mentahan (ZIP) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- FileSaver untuk save file -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
   <script>
     tailwind.config = {
@@ -135,6 +135,53 @@
     .forest-bg {
       background: radial-gradient(circle at top right, #2D6A4F, #1A3C34 60%, #0f2520);
     }
+
+    /* --- PRINT STYLES - KHUSUS A4 (8 STRIP LAYOUT) --- */
+    #printArea {
+      display: none;
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        /* Paksa Portrait */
+        margin: 0;
+        /* Hilangkan margin default browser */
+      }
+
+      body>* {
+        display: none !important;
+        /* Sembunyikan semua UI website */
+      }
+
+      #printArea {
+        display: flex !important;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: flex-start;
+        /* Rapikan ke atas */
+        width: 210mm;
+        /* Lebar A4 */
+        height: 297mm;
+        /* Tinggi A4 */
+        background: white;
+        padding: 5mm;
+        /* Padding kertas sedikit */
+        gap: 2mm;
+        /* Jarak antar strip */
+      }
+
+      .print-item {
+        /* Logika 8 Strip: 4 Kolom x 2 Baris */
+        /* Lebar = (100% / 4) dikurangi gap */
+        width: calc(25% - 2mm);
+        height: auto;
+        /* Tinggi menyesuaikan rasio */
+        border: 1px dashed #ddd;
+        /* Garis potong tipis */
+        box-sizing: border-box;
+      }
+    }
   </style>
 </head>
 
@@ -142,6 +189,11 @@
 
   <!-- Flash Overlay -->
   <div id="flash" class="hidden"></div>
+
+  <!-- PRINT AREA (Hidden on Screen, Visible on Print) -->
+  <div id="printArea">
+    <!-- Content will be injected via JS -->
+  </div>
 
   <div class="container mx-auto px-4 py-8 max-w-6xl relative z-10">
 
@@ -154,14 +206,13 @@
         class="fa-solid fa-tree text-emerald absolute top-0 right-10 text-6xl opacity-20 transform rotate-12 hidden md:block"></i>
 
       <h1 class="text-5xl md:text-7xl font-adventure font-bold text-wood mb-2 tracking-wider drop-shadow-lg">
-        <i class="fa-solid fa-compass mr-3 text-10xl align-middle opacity-80"></i>PETA SEMERU
+        <i class="fa-solid fa-compass mr-3 text-3xl align-middle opacity-80"></i>PETA SEMERU
       </h1>
       <div
         class="inline-block border-t border-b border-wood/30 py-2 px-6 bg-deepForest/50 backdrop-blur-sm rounded-full">
         <p class="text-mint text-sm md:text-lg font-light tracking-wide uppercase">
-          <span class="text-wood font-bold">PE</span>NGAJIAN AKHIR <span class="text-wood font-bold">TA</span>HUN <span
-            class="text-wood font-bold">SE</span>mangat <span class="text-wood font-bold">MER</span>aih s<span
-            class="text-wood font-bold">U</span>rga
+          PENGAJIAN AKHIR TAHUN <span class="text-wood font-bold">SE</span>mangat <span
+            class="text-wood font-bold">ME</span>raih s<span class="text-wood font-bold">U</span>rga
         </p>
         <p class="text-xs text-emerald mt-1 font-bold">PPM Roudhotul Jannah Bandung</p>
       </div>
@@ -262,9 +313,10 @@
             <li><b>Shortcut Keyboard:</b> Tekan <span
                 class="bg-wood text-deepForest px-1 rounded font-bold">SPASI</span> atau <span
                 class="bg-wood text-deepForest px-1 rounded font-bold">ENTER</span> untuk ambil foto.</li>
-            <li><b>Shortcut Mobile/Tablet:</b> Gunakan <span class="text-wood font-bold">Remote Bluetooth</span> (Tombol
-              Shutter) atau cukup <b>Sentuh Layar</b> kamera.</li>
+            <li><b>Shortcut Mobile/Tablet:</b> Gunakan <span class="text-wood font-bold">Remote Bluetooth</span> atau
+              sentuh layar.</li>
             <li>Pastikan background file PNG transparan.</li>
+            <li>Mode Strip mendukung <b>Cetak A4 (8 Copies)</b>.</li>
           </ul>
         </div>
       </div>
@@ -272,8 +324,7 @@
       <!-- Area Kamera & Preview (Tengah & Kanan) -->
       <div class="lg:col-span-8 flex flex-col items-center">
 
-        <!-- Wrapper Kamera 
-                     Menambahkan 'cursor-pointer' agar user tahu area ini bisa diklik/disentuh -->
+        <!-- Wrapper Kamera -->
         <div id="cameraContainer" onclick="handleScreenTap()"
           class="relative w-full max-w-2xl bg-deepForest rounded-xl overflow-hidden shadow-2xl border-4 border-wood mb-6 group transition-all duration-300 aspect-video cursor-pointer">
 
@@ -285,7 +336,7 @@
           <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-wood z-20 pointer-events-none">
           </div>
 
-          <!-- Overlay 'Tap to Capture' Hint (Hanya muncul saat hover/awal) -->
+          <!-- Overlay 'Tap to Capture' Hint -->
           <div
             class="absolute bottom-4 left-0 right-0 text-center z-30 opacity-0 group-hover:opacity-80 transition pointer-events-none">
             <span
@@ -294,7 +345,7 @@
             </span>
           </div>
 
-          <!-- Tombol Fullscreen (Stop propagation agar klik tombol ini tidak mentrigger foto) -->
+          <!-- Tombol Fullscreen -->
           <button onclick="event.stopPropagation(); toggleFullscreen()"
             class="absolute top-4 right-4 z-30 bg-deepForest/60 hover:bg-deepForest text-wood p-3 rounded-full backdrop-blur-md transition opacity-0 group-hover:opacity-100 focus:opacity-100 border border-wood"
             title="Fullscreen Camera">
@@ -318,7 +369,7 @@
           </div>
         </div>
 
-        <!-- Tombol Action -->
+        <!-- Tombol Action Utama -->
         <div class="flex gap-4 mb-8">
           <button id="btnCapture" onclick="startPhotobooth()"
             class="wood-btn px-10 py-4 rounded-full font-bold text-xl shadow-xl flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed font-adventure tracking-wide">
@@ -336,14 +387,33 @@
           <h3 class="text-3xl font-bold mb-6 text-wood font-adventure drop-shadow-md">
             <i class="fa-solid fa-star text-mint mr-2"></i>HASIL PETUALANGAN
           </h3>
-          <!-- Image Result -->
-          <img id="finalImage" class="rounded-lg shadow-2xl border-[6px] border-wood mb-6 h-auto"
-            style="max-height: 70vh; max-width: 100%;" src="" alt="Hasil Photobooth">
 
-          <a id="downloadLink" href="#" download="PETA_SEMERU_2025.png"
-            class="wood-btn px-8 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 transition text-lg">
-            <i class="fa-solid fa-download"></i> SIMPAN MEMORI
-          </a>
+          <!-- Image Result Preview -->
+          <img id="finalImage" class="rounded-lg shadow-2xl border-[6px] border-wood mb-6 h-auto"
+            style="max-height: 50vh; max-width: 100%;" src="" alt="Hasil Photobooth">
+
+          <!-- Action Buttons Container -->
+          <div class="flex flex-col gap-3 w-full max-w-md">
+
+            <!-- 1. Download Final Frame -->
+            <a id="downloadLink" href="#" download="PETA_SEMERU_2025.png"
+              class="wood-btn px-8 py-3 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 transition text-lg w-full">
+              <i class="fa-solid fa-download"></i> SIMPAN GAMBAR UTUH
+            </a>
+
+            <!-- 2. Download Mentahan (ZIP) -->
+            <button onclick="downloadRawZip()"
+              class="bg-emerald hover:bg-[#23533d] text-mint border border-mint/30 px-8 py-3 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 transition w-full">
+              <i class="fa-solid fa-file-zipper"></i> DOWNLOAD MENTAHAN (ZIP)
+            </button>
+
+            <!-- 3. Print A4 (Khusus Strip) -->
+            <button id="btnPrintA4" onclick="printA4()"
+              class="hidden bg-white text-deepForest hover:bg-gray-200 border border-gray-300 px-8 py-3 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 transition w-full">
+              <i class="fa-solid fa-print"></i> CETAK A4 (8 STRIP - HEMAT KERTAS)
+            </button>
+
+          </div>
         </div>
 
       </div>
@@ -397,9 +467,10 @@
     // --- STATE ---
     let state = {
       mode: 'poster',
-      photos: [],
+      photos: [],      // Canvas mentah (tanpa frame)
       frameImage: null,
-      isCapturing: false
+      isCapturing: false,
+      finalDataURL: null // Menyimpan hasil akhir frame untuk keperluan print
     };
 
     // --- DOM ELEMENTS ---
@@ -419,6 +490,7 @@
     const cameraContainer = document.getElementById('cameraContainer');
     const fsIcon = document.getElementById('fsIcon');
     const resInfo = document.getElementById('resInfo');
+    const btnPrintA4 = document.getElementById('btnPrintA4');
 
     // --- INIT CAMERA ---
     async function initCamera() {
@@ -503,30 +575,17 @@
       }
     }
 
-    // --- INPUT SHORTCUTS HANDLERS ---
-
-    // 1. Keyboard Handler (Laptop: Spasi/Enter, Mobile: Remote Shutter)
+    // --- SHORTCUTS ---
     document.addEventListener('keydown', (e) => {
-      // Jika sedang mengetik di input file (jarang terjadi tapi best practice), abaikan
       if (e.target.tagName === 'INPUT') return;
-
-      // Spasi biasanya scroll halaman, kita prevent biar gak turun
       if (e.code === 'Space') e.preventDefault();
-
-      // Cek tombol: Space, Enter, atau Volume Keys (jika browser support)
-      // Banyak remote shutter bluetooth mengirim sinyal 'Enter' atau 'VolumeUp'
       if (['Space', 'Enter', 'AudioVolumeUp'].includes(e.code) || e.key === ' ' || e.key === 'Enter') {
-        if (!state.isCapturing) {
-          startPhotobooth();
-        }
+        if (!state.isCapturing) startPhotobooth();
       }
     });
 
-    // 2. Screen Tap Handler (Mobile/Tablet Touch)
     function handleScreenTap() {
-      if (!state.isCapturing) {
-        startPhotobooth();
-      }
+      if (!state.isCapturing) startPhotobooth();
     }
 
     // --- CORE LOGIC ---
@@ -545,7 +604,7 @@
         await doCountdown(i);
         triggerFlash();
         const photoData = captureFrame();
-        state.photos.push(photoData);
+        state.photos.push(photoData); // Simpan mentahan
 
         if (i < layout.count) {
           await new Promise(r => setTimeout(r, 1000));
@@ -599,7 +658,7 @@
       tempCtx.scale(-1, 1);
       tempCtx.drawImage(webcamVideo, 0, 0);
 
-      return tempCanvas;
+      return tempCanvas; // Mengembalikan canvas mentah
     }
 
     function generateStrip() {
@@ -608,8 +667,6 @@
       canvas.width = layout.width;
       canvas.height = layout.height;
 
-      // Fill Background Hutan Gelap (Agar kalau PNG bolong tetap ada warnanya, atau ganti white jika mau standard)
-      // Filosofi: Putih/Cream sebagai dasar foto (Mint Cream)
       ctx.fillStyle = "#F0FDF4";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -619,7 +676,6 @@
       state.photos.forEach((photoCanvas, index) => {
         const col = index % layout.cols;
         const row = Math.floor(index / layout.cols);
-
         const xPos = col * slotWidth;
         const yPos = row * slotHeight;
 
@@ -648,28 +704,33 @@
         ctx.restore();
       });
 
-      // --- FRAME OVERLAY & WATERMARK ---
+      // Frame & Watermark
       if (state.frameImage) {
         ctx.drawImage(state.frameImage, 0, 0, canvas.width, canvas.height);
       } else {
-        // Auto Watermark jika tidak ada frame
-        ctx.fillStyle = "#1A3C34"; // Deep Forest
+        ctx.fillStyle = "#1A3C34";
         ctx.fillRect(0, canvas.height - 80, canvas.width, 80);
-
-        ctx.fillStyle = "#D4A373"; // Wood
+        ctx.fillStyle = "#D4A373";
         ctx.font = "bold 30px Cinzel";
         ctx.textAlign = "center";
         ctx.fillText("PETA SEMERU 2025 - PPM Roudhotul Jannah", canvas.width / 2, canvas.height - 30);
       }
 
-      const dataURL = canvas.toDataURL('image/png');
-      finalImage.src = dataURL;
+      state.finalDataURL = canvas.toDataURL('image/png');
+      finalImage.src = state.finalDataURL;
       resultArea.classList.remove('hidden');
 
       const link = document.getElementById('downloadLink');
-      link.href = dataURL;
+      link.href = state.finalDataURL;
 
       resultArea.scrollIntoView({ behavior: 'smooth' });
+
+      // Toggle Tombol Print A4 khusus mode Strip
+      if (state.mode === 'strip') {
+        btnPrintA4.classList.remove('hidden');
+      } else {
+        btnPrintA4.classList.add('hidden');
+      }
     }
 
     function resetApp() {
@@ -677,6 +738,46 @@
       btnRetake.classList.add('hidden');
       btnCapture.innerHTML = '<i class="fa-solid fa-camera"></i> AMBIL FOTO (SPASI)';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- FITUR BARU: DOWNLOAD ZIP MENTAHAN ---
+    function downloadRawZip() {
+      const zip = new JSZip();
+      const folder = zip.folder("PETA_SEMERU_RAW");
+
+      // 1. Masukkan Foto Mentahan (Satu per satu)
+      state.photos.forEach((canvas, i) => {
+        const data = canvas.toDataURL("image/png").split(',')[1];
+        folder.file(`foto_${i + 1}_mentah.png`, data, { base64: true });
+      });
+
+      // 2. Masukkan Hasil Akhir (Framed)
+      if (state.finalDataURL) {
+        const finalData = state.finalDataURL.split(',')[1];
+        folder.file("hasil_photostrip_full.png", finalData, { base64: true });
+      }
+
+      zip.generateAsync({ type: "blob" }).then(function (content) {
+        saveAs(content, "PETA_SEMERU_PAKET_FOTO.zip");
+      });
+    }
+
+    // --- FITUR BARU: PRINT A4 (8 STRIP LAYOUT) ---
+    function printA4() {
+      if (state.mode !== 'strip') return;
+
+      const printArea = document.getElementById('printArea');
+      printArea.innerHTML = ''; // Clear previous
+
+      // Buat 8 copy dari hasil final strip agar penuh 1 kertas A4
+      for (let i = 0; i < 8; i++) {
+        const img = document.createElement('img');
+        img.src = state.finalDataURL;
+        img.className = 'print-item';
+        printArea.appendChild(img);
+      }
+
+      window.print();
     }
 
     setMode('poster');
