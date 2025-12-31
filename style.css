@@ -50,6 +50,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  /* Indikator bisa diklik */
 }
 
 :fullscreen video {
@@ -93,4 +95,51 @@ body {
 /* Background Pattern Hutan Abstrak (CSS Gradient) */
 .forest-bg {
   background: radial-gradient(circle at top right, #2D6A4F, #1A3C34 60%, #0f2520);
+}
+
+/* --- PRINT STYLES - KHUSUS A4 (8 STRIP LAYOUT) --- */
+#printArea {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    /* Paksa Portrait */
+    margin: 0;
+    /* Hilangkan margin default browser */
+  }
+
+  body>* {
+    display: none !important;
+    /* Sembunyikan semua UI website */
+  }
+
+  #printArea {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    /* Rapikan ke atas */
+    width: 210mm;
+    /* Lebar A4 */
+    height: 297mm;
+    /* Tinggi A4 */
+    background: white;
+    padding: 5mm;
+    /* Padding kertas sedikit */
+    gap: 2mm;
+    /* Jarak antar strip */
+  }
+
+  .print-item {
+    /* Logika 8 Strip: 4 Kolom x 2 Baris */
+    /* Lebar = (100% / 4) dikurangi gap */
+    width: calc(25% - 2mm);
+    height: auto;
+    /* Tinggi menyesuaikan rasio */
+    border: 1px dashed #ddd;
+    /* Garis potong tipis */
+    box-sizing: border-box;
+  }
 }
